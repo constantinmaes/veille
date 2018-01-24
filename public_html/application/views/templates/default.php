@@ -8,14 +8,14 @@
  
     <body>
         <div class="">
-		<section class="hero is-info is-bold">
+		<section class="hero is-primary">
   			<div class="hero-body">
     				<div class="container">
       					<h1 class="title">
-        					<?php echo $classe; ?>
+        					<?php echo ucfirst($classe); ?>
       					</h1>
       					<h2 class="subtitle">
-        					Primary subtitle
+        					
       					</h2>
     				</div>
   			</div>
