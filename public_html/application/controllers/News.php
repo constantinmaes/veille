@@ -26,4 +26,10 @@ class News extends CI_Controller {
 		$id=$_POST['id_feed'];
 		$this->news_model->publishNews($id);
 	}
+	public function discard()
+	{
+		$this->load->model('news_model');
+		$id=$_POST['id_feed'];
+		$this->news_model->discardNews($id);
+	}
 }

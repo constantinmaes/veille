@@ -9,6 +9,20 @@ class News_model extends CI_model {
 		$this->db->select('*');
 		$this->db->from('feeds');
 		$this->db->join('keywords', 'feeds.id_keyword = keywords.id_keyword');
+		if(isset($_POST['filter'])){
+			if($_POST['filter']=='published'){
+				$this->db->where('published',1);
+			}
+			elseif($_POST['filter']=='discarded'){
+				$this->db->where('discarded',1);
+			}
+			elseif($_POST['filter']=='waiting'){
+				$this->db->where('published',0);
+				$this->db->where('discarded',0);
+			}
+			else{
+			}
+		}
 		$this->db->order_by('feeds.retrieval_date', 'ASC');
 		$results = $this->db->get();
 		foreach($results->result() as $row){
@@ -19,6 +33,7 @@ class News_model extends CI_model {
 				'url' => $row->url,
 				'retrieval_date' => $row->retrieval_date,
 				'published' => $row->published,
+				'discarded' => $row->discarded,
 				'id_keyword' => $row->id_keyword,
 				'keyword' => $row->word,
 				'rss_url' => $row->rss_url,
@@ -34,6 +49,39 @@ class News_model extends CI_model {
 		$this->db->where('id_feed', $id);
 		$this->db->update('feeds', $data);
 		echo true;
+	}
+
+	public function discardNews($id){
+		$data = array(
+        	'discarded' => 1,
+		);
+		$this->db->where('id_feed', $id);
+		$this->db->update('feeds', $data);
+		echo true;
+	}
+
+	public function addNews()
+	{
+		$data = array(
+			'title' => strip_tags($_POST['title']),
+			'content' => strip_tags($_POST['content']),
+			'url' => strip_tags($_POST['url']),
+			'retrieval_date' => strip_tags($_POST['retrieval_date']),
+			'published' => 0,
+			'discarded' => 0,
+			'id_keyword' => strip_tags($_POST['id_keyword']),
+		);
+		$this->db->insert('feeds', $data);
+		$this->db->select('*');
+		$this->db->from('feeds');
+		$this->db->where('url',$_POST['url']);
+		$add_result = $this->db->get();
+		if($add_result->num_rows()!=0){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	public function getAllKeywords(){

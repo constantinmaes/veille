@@ -5,17 +5,22 @@
 	<div class="column is-8">
 <?php
 	foreach ($news as $article) {
-		if($article['published']==0){
+		if($article['published']==0 && $article['discarded']==0){
 			echo 
 				'<div class="box news" style="display:none;" id="'.$article['id_feed'].'">
 					<h1>'.$article['title'].'</h1>
+					<br>
 					<p>
 						<span style="color:grey;">ID : '.$article['id_feed'].' | '.$article['retrieval_date'].'</span> | <a href="'.$article['url'].'" target="_blank">Lien</a>
 					</p>
+					<br>
 					<p>
 						'.$article['content'].'
 					</p>
+					<br>
 					<button class="button is-centered is-primary publish" value="'.$article['id_feed'].'">Publier</button>
+					<button class="button is-centered is-danger discard" value="'.$article['id_feed'].'">Oublier</button>
+					<input type="text" id="add_tag" placeholder="Ajouter un tag" />
 				</div>';
 		}
 	}
@@ -27,6 +32,7 @@
 </div>
 <script>
 	$( document ).ready(function() {
+		
 		var idArray = [];
 		var index = 0;
 		$('.news').each(function () {
@@ -84,7 +90,6 @@
 
 			success:function(result){
 				if(result){
-					//alert('ok');
 					$('#next').click();
 				}
 				else{
@@ -92,6 +97,33 @@
 				}
 			}
 			});
+		});
+
+		$('.discard').click(function(){
+			var id_feed = $(this).val();
+			$.ajax({
+			url: '../news/discard',
+			type: 'POST',
+			data: {
+				id_feed : id_feed,
+			},
+
+			success:function(result){
+				if(result){
+					$('#next').click();
+				}
+				else{
+					alert('pb');
+				}
+			}
+			});
+		});
+
+		$("#add_tag").on('keyup', function (e) {
+    		if (e.keyCode == 13) {
+        		alert("Enter");
+        		$("#add_tag").val("");
+    		}
 		});
 	});
 </script>
