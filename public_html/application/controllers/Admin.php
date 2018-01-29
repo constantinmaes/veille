@@ -93,4 +93,12 @@ class Admin extends CI_Controller {
 			}
 		}
 	}
+	public function analyse()
+	{
+		$this->load->library('template');
+		$this->load->model('news_model');
+		$data['classe'] = $this->router->class;
+		$data['results'] = $this->news_model->analyseAll();
+		$this->template->load('admin','analyse_view',$data);
+	}
 }

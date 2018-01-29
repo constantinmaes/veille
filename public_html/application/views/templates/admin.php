@@ -33,6 +33,8 @@
                     <li><a href="./waitlist">Carousel</a></li>
                     <li><a href="./keywords">Mots-clés</a></li>
                     <li><a href="./add">Ajouter un article</a></li>
+                    <li><a href="./tags">Analyse par tags</a></li>
+                    <li><a href="./analyse">Analyse lexicale</a></li>
                     <li><a>Vue statistique</a></li>
                 </ul>
                 <p class="menu-label">

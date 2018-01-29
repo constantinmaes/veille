@@ -5,6 +5,18 @@ class News_model extends CI_model {
                 $this->load->database();
         }
 	public function getAllNews(){//Récuperer toutes les news de la db
+		$tags = array();
+		$this->db->select('*');
+		$this->db->from('tags_feeds');
+		$this->db->join('tags','tags_feeds.id_tag=tags.id_tag','full');
+		$results = $this->db->get();
+		foreach($results->result() as $row){
+			$tags[] = array(
+				'id_feed' => $row->id_feed,
+				'tag' => $row->tag,
+			);
+
+		}
 		$news = array();
 		$this->db->select('*');
 		$this->db->from('feeds');
@@ -26,20 +38,59 @@ class News_model extends CI_model {
 		$this->db->order_by('feeds.retrieval_date', 'ASC');
 		$results = $this->db->get();
 		foreach($results->result() as $row){
+			$website = str_replace('https://www.google.com/url?rct=j&sa=t&url=', '', $row->url);
+			$website = str_replace('http://', '', $website);
+			$website = str_replace('https://', '', $website);
+			$website = str_replace('www.', '', $website);
+			$website = substr($website, 0, strpos($website, '/'));
+			$id_feed = $row->id_feed;
+			$tags_string = '';
+			foreach($tags as $index=>$tag){
+				
+					if($tag['id_feed']==$id_feed){
+						$tags_string .= '#'.$tag['tag'].' ';
+					}
+				
+			}
 			$news[] = array(
 				'id_feed' => $row->id_feed,
 				'title' => $row->title,
 				'content' => $row->content,
 				'url' => $row->url,
+				'website' => $website,
 				'retrieval_date' => $row->retrieval_date,
 				'published' => $row->published,
 				'discarded' => $row->discarded,
 				'id_keyword' => $row->id_keyword,
 				'keyword' => $row->word,
 				'rss_url' => $row->rss_url,
+				'tags' => $tags_string,
 			);
 		}
 		return $news;
+	}
+	public function getTagsForFeed($id_feed)
+	{
+		$tags = array();
+		$this->db->select('*');
+		$this->db->from('tags_feeds');
+		$this->db->join('tags','tags_feeds.id_tag=tags.id_tag','full');
+		$results = $this->db->get();
+		foreach($results->result() as $row){
+			$tags[] = array(
+				'id_feed' => $row->id_feed,
+				'tag' => $row->tag,
+			);
+
+		}
+		$tags_string = '';
+			foreach($tags as $index=>$tag){
+				if($tag['id_feed']==$id_feed){
+					$tags_string .= '#'.$tag['tag'].' ';
+				}
+			
+		}
+		echo $tags_string;
 	}
 
 	public function publishNews($id){
@@ -199,6 +250,137 @@ class News_model extends CI_model {
 			}
 		}
 		
+	}
+	public function parseWebsite($id,$url)
+	{
+		
+		$url = str_replace('https://www.google.com/url?rct=j&sa=t&url=', '', $url);
+		$url = substr($url, 0, strpos($url, '&ct'));
+		$curl_handle=curl_init();
+	    curl_setopt($curl_handle, CURLOPT_URL, $url);
+	    curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, TRUE);
+	    curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+	    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1");
+	    $content = curl_exec($curl_handle);
+	    curl_close($curl_handle);
+	    $content = str_replace(substr($content, 0, strpos($content, '<body>')), '', $content);
+	    $content = preg_replace('@<style[^>]*?>.*?</style>@siu', '', $content);
+	    $content = preg_replace('@<head[^>]*?>.*?</head>@siu', '', $content);
+	    $content = preg_replace('@<script[^>]*?>.*?</script>@siu', '', $content);
+	    $content = preg_replace('@<aside[^>]*?>.*?</aside>@siu', '', $content);
+	    $content = preg_replace('@<nav[^>]*?>.*?</nav>@siu', '', $content);
+	    $content = preg_replace('@<header[^>]*?>.*?</header>@siu', '', $content);
+	    $content = preg_replace('@<footer[^>]*?>.*?</footer>@siu', '', $content);
+	    $content = strip_tags($content);
+		return $content;
+	}
+
+	public function displayWebsiteContent($id,$url)
+	{
+		$url = str_replace('https://www.google.com/url?rct=j&sa=t&url=', '', $url);
+		$url = substr($url, 0, strpos($url, '&ct'));
+		$curl_handle=curl_init();
+	    curl_setopt($curl_handle, CURLOPT_URL, $url);
+	    curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, TRUE);
+	    curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+	    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1");
+	    $content = curl_exec($curl_handle);
+	    curl_close($curl_handle);
+	    /*$content = str_replace(substr($content, 0, strpos($content, '<body>')), '', $content);
+	    $content = preg_replace('@<style[^>]*?>.*?</style>@siu', '', $content);
+	    $content = preg_replace('@<head[^>]*?>.*?</head>@siu', '', $content);*/
+	    $content = preg_replace('@<script[^>]*?>.*?</script>@siu', '', $content);
+	    $content = preg_replace('@<aside[^>]*?>.*?</aside>@siu', '', $content);
+	    $content = preg_replace('@<nav[^>]*?>.*?</nav>@siu', '', $content);
+	    $content = preg_replace('@<header[^>]*?>.*?</header>@siu', '', $content);
+	    $content = preg_replace('@<footer[^>]*?>.*?</footer>@siu', '', $content);
+	    $content = strip_tags($content);
+		return $content;
+		//return $url;
+	}
+	public function writeWebsiteContentToFile($content){
+		$file = fopen('assets/website_content','w+');
+		fwrite($file,$content);
+		fclose($file);
+	}
+	public function countOccurrences(){
+		$output = array();
+		$analysis = array();
+		$results = array();
+		//for($i=0;$i<10;$i++){
+			$command = 'python assets/split.py';	
+			exec($command,$output);
+			foreach($output as $key=>$val){
+				if($key%2==0){
+					$analysis[][$val] = $output[$key+1];
+				}
+			}
+		//}
+		foreach($analysis as $id){
+			foreach($id as $key=>$val){
+				if(!isset($results[$key])){
+					$results[$key] = 0;
+				}
+				$results[$key] += $val;
+			}
+		}
+		return $results;
+	}
+	public function analyseAll()
+	{
+		$news = $this->getAllNews();
+		foreach($news as $article){
+			if($article['id_feed']>200 && $article['id_feed']<301){
+			$content = $this->parseWebsite($article['id_feed'],$article['url']);
+			$this->writeWebsiteContentToFile($content);
+			$results[$article['id_feed']] = $this->countOccurrences();
+			}
+		}
+		return $results;
+	}
+	public function addTag($id,$tag)
+	{
+		$this->db->select('*');
+		$this->db->from('tags');
+		$this->db->where('tag',$tag);
+		$tag_target = $this->db->get();
+		if($tag_target->num_rows()==0){
+			$data = array(
+				'tag' => $tag,
+			);
+			$this->db->insert('tags', $data);
+		}
+		$this->db->select('id_tag');
+		$this->db->from('tags');
+		$this->db->where('tag',$tag);
+		$results = $this->db->get();
+		foreach($results->result() as $row){
+			$id_tag = $row->id_tag;
+		}
+		$data = array(
+				'id_tag' => $id_tag,
+				'id_feed' => $id,
+			);
+		$this->db->insert('tags_feeds',$data);
+		echo true;
+	}
+	public function getTags($id)
+	{
+		$tags = array();
+		$this->db->select('*');
+		$this->db->from('tags_feeds');
+		$this->db->join('tags', 'tags_feeds.id_tag = tags.id_tag');
+		$this->db->where('id_feed',$id);
+		$results = $this->db->get();
+		if($results->num_rows()==0){
+			foreach($results->result() as $row){
+				$tags[] = '#'.$row->tags.id_tag;
+			}
+		}
+		$tags = implode(',', $tags);
+		echo $tags;
 	}
 }
 ?>

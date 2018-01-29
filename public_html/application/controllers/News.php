@@ -32,4 +32,23 @@ class News extends CI_Controller {
 		$id=$_POST['id_feed'];
 		$this->news_model->discardNews($id);
 	}
+	public function addTag(){
+		$this->load->model('news_model');
+		$id=$_POST['id_feed'];
+		$tag=$_POST['tag'];
+		$this->news_model->addTag($id,$tag);
+	}
+	public function refreshTags(){
+		$this->load->model('news_model');
+		$id_feed=$_POST['id_feed'];
+		$this->news_model->getTagsForFeed($id_feed);
+	}
+	public function displayWebsite()
+	{
+		$this->load->model('news_model');
+		$id_feed=$_POST['id_feed'];
+		$url=$_POST['url'];
+		$content = $this->news_model->displayWebsiteContent($id_feed,$url);
+		echo $content;
+	}
 }

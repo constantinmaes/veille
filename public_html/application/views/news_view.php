@@ -16,6 +16,7 @@
 					<td>ID</td>
 					<td>Titre de la page</td>
 					<td>URL</td>
+					<td>Site</td>
 					<td>Date de recuperation</td>
 			</thead>
 			<tbody id="content">
@@ -25,6 +26,7 @@
 				echo '<td>'.$article['id_feed'].'</td>';
 				echo '<td>'.$article['title'].'</td>';
 				echo '<td><a href="'.$article['url'].'" target="_blank">Lien</a></td>';
+				echo '<td>'.$article['website'].'</td>';
 				echo '<td>'.$article['retrieval_date'].'</td>';
 				echo '</tr>';
 			}	
