@@ -15,7 +15,6 @@ class News_model extends CI_model {
 				'id_feed' => $row->id_feed,
 				'tag' => $row->tag,
 			);
-
 		}
 		$news = array();
 		$this->db->select('*');
@@ -32,10 +31,21 @@ class News_model extends CI_model {
 				$this->db->where('published',0);
 				$this->db->where('discarded',0);
 			}
-			else{
-			}
+			else{}
 		}
-		$this->db->order_by('feeds.retrieval_date', 'ASC');
+		if(isset($_POST['search_term'])){
+			$search_term = strip_tags($_POST['search_term']);
+			$this->db->like('title',$search_term);
+			$this->db->or_like('content',$search_term);
+		}
+		if(isset($_POST['order'])){
+			$order = $_POST['order'];
+			$this->db->order_by('feeds.'.$order.'', 'ASC');
+		}
+		else{
+			$this->db->order_by('feeds.retrieval_date','ASC');
+		}
+
 		$results = $this->db->get();
 		foreach($results->result() as $row){
 			$website = str_replace('https://www.google.com/url?rct=j&sa=t&url=', '', $row->url);

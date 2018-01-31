@@ -60,6 +60,7 @@ class Admin extends CI_Controller {
 			$table .= '<td>'.$article['id_feed'].'</td>';
 			$table .= '<td>'.$article['title'].'</td>';
 			$table .= '<td><a href="'.$article['url'].'" target="_blank">Lien</a></td>';
+			$table .= '<td>'.$article['website'].'</td>';
 			$table .= '<td>'.$article['retrieval_date'].'</td>';
 			$table .= '</tr>';
 		}
