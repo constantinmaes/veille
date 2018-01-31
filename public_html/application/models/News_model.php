@@ -20,24 +20,28 @@ class News_model extends CI_model {
 		$this->db->select('*');
 		$this->db->from('feeds');
 		$this->db->join('keywords', 'feeds.id_keyword = keywords.id_keyword');
+		if(isset($_POST['search_term']) and $_POST['search_term']!=''){
+			$search_term = strip_tags($_POST['search_term']);
+			$this->db->like('title',$search_term);
+			$this->db->or_like('content',$search_term);
+		}
 		if(isset($_POST['filter'])){
 			if($_POST['filter']=='published'){
 				$this->db->where('published',1);
+				$this->db->where('discarded',0);
 			}
 			elseif($_POST['filter']=='discarded'){
 				$this->db->where('discarded',1);
+				$this->db->where('published',0);
 			}
 			elseif($_POST['filter']=='waiting'){
 				$this->db->where('published',0);
 				$this->db->where('discarded',0);
 			}
-			else{}
-		}
-		if(isset($_POST['search_term'])){
-			$search_term = strip_tags($_POST['search_term']);
-			$this->db->like('title',$search_term);
-			$this->db->or_like('content',$search_term);
-		}
+			else{
+				$this->db->where(1);
+			}
+		}		
 		if(isset($_POST['order'])){
 			$order = $_POST['order'];
 			$this->db->order_by('feeds.'.$order.'', 'ASC');
