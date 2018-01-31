@@ -17,7 +17,7 @@
             </div>
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <a class="text-white">Se déconnecter</a>
+                    <a class="text-white" href="../user/logout">Se déconnecter</a>
                 </div>
             </div>
         </div>

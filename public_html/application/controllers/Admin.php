@@ -3,28 +3,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Admin extends CI_Controller {
 
+	public function __construct()
+	{
+	    parent::__construct();
+	    $this->load->library('session');
+		$this->load->helper('url_helper');
+        if($this->session->loggedin==false){
+        	$url_user = 'http://'.base_url().'index.php/user';
+            redirect($url_user);
+        }
+	}
+
 	public function index()
 	{
-		$this->load->library('template');
-		$this->load->model('user_model');
-		$this->load->model('news_model');
-		$data['classe'] = $this->router->class;
-		if(isset($_POST['login']) && isset($_POST['password'])){
-			$login = strip_tags($_POST['login']);
-			$password=strip_tags($_POST['password']);
-			$this->user_model->login($login,$password);
-			if($_SESSION['logged_in']){
-				header('Location:./index.php/admin/all');
-			}
-			else{
-				header('Location:./index.php/admin');
-			}
-		}
-		else{
-			$this->template->load('login','login_view');
-		}
-		//$data['news'] = $this->news_model->getAllNews();
-		//$this->template->load('admin','waitlist_view',$data);
+		header('Location:admin/all');
 	}
 
 	public function keywords(){
@@ -100,5 +92,13 @@ class Admin extends CI_Controller {
 		$data['classe'] = $this->router->class;
 		$data['results'] = $this->news_model->analyseAll();
 		$this->template->load('admin','analyse_view',$data);
+	}
+	public function tags()
+	{
+		$this->load->library('template');
+		$this->load->model('news_model');
+		$data['classe'] = $this->router->class;
+		$data['results'] = $this->news_model->analyseTags();
+		$this->template->load('admin','tags_view',$data);
 	}
 }

@@ -111,7 +111,7 @@
 
 		$('.publish').click(function(){
 			var id_feed = $(this).val();
-			alert($(this).val());
+			//alert($(this).val());
 			$.ajax({
 			url: '../news/publish',
 			type: 'POST',
@@ -124,7 +124,7 @@
 					$('#next').click();
 				}
 				else{
-					alert('pb');
+					//alert('pb');
 				}
 			}
 			});
@@ -144,7 +144,7 @@
 					$('#next').click();
 				}
 				else{
-					alert('pb');
+					//alert('pb');
 				}
 			}
 			});
@@ -167,7 +167,7 @@
 							//alert("Tag added");
 						}
 						else{
-							alert('pb');
+							//alert('pb');
 						}
 					}
 				});

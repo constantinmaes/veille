@@ -247,6 +247,11 @@ class News_model extends CI_model {
 						$this->db->where('id_feed', $result2['id_feed']);
 						$this->db->delete('feeds');
 				}
+				if($result1['title']==$result2['title'] && $result1['id_feed']!=$result2['id_feed'] && !in_array($result1['id_feed'],$feeds_to_delete) && !in_array($result2['id_feed'], $feeds_to_delete)){
+						$feeds_to_delete[]=$result2['id_feed'];
+						$this->db->where('id_feed', $result2['id_feed']);
+						$this->db->delete('feeds');
+				}
 			}
 		}
 		
@@ -381,6 +386,26 @@ class News_model extends CI_model {
 		}
 		$tags = implode(',', $tags);
 		echo $tags;
+	}
+	public function analyseTags()
+	{
+		$tags = array();
+		$this->db->select('*');
+		$this->db->from('tags');
+		$this->db->join('tags_feeds','tags.id_tag=tags_feeds.id_tag');
+		$this->db->join('feeds','tags_feeds.id_feed=feeds.id_feed');
+		$results = $this->db->get();
+		if($results->num_rows()==0){
+			foreach($results->result() as $row){
+				$tags[] = array(
+					'id_tag' => $row->tags.id_tag,
+					'tag' => $row->tags.tag,
+					'id_feed' => $row->feeds.id_feed,
+					'retrieval_date' => $row->feeds.retrieval_date,
+				);
+			}
+		}
+		return $results;
 	}
 }
 ?>
