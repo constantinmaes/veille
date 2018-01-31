@@ -27,8 +27,13 @@
 				<p>Nombre de résultats dans le filtre : <span id="filter_results"></span></p>
 			</div>
 			<br>
+			<form method="post" action="modifySelected">
+				Action sur les news sélectionnées : 
+				<input class="button is-danger" type="submit" name="bDiscard" value="Oublier"/>
+				<input class="button is-primary" type="submit" name="bPublish" value="Publier"/>
 		<table class="table is-striped is-hoverable is-fullwidth">
 			<thead>
+					<td>Selectionner</td>
 					<td>ID</td>
 					<td>Titre de la page</td>
 					<td>URL</td>
@@ -36,9 +41,11 @@
 					<td>Date de recuperation</td>
 			</thead>
 			<tbody id="content">
+				
 		<?php
 			foreach($news as $article){
 				echo '<tr>';
+				echo '<td><input type="checkbox" name="listToModify" value="'.$article['id_feed'].'" /></td>';
 				echo '<td>'.$article['id_feed'].'</td>';
 				echo '<td>'.$article['title'].'</td>';
 				echo '<td><a href="'.$article['url'].'" target="_blank">Lien</a></td>';
@@ -47,9 +54,10 @@
 				echo '</tr>';
 			}	
 		?>
+				
 			</tbody>
 		</table>
-
+		</form>
 <script>
 	$( document ).ready(function() {
 		var filter_results= $('#content tr').length;
