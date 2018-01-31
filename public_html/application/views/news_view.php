@@ -10,7 +10,7 @@
 						<option value="waiting">En attente</option>
 					</select>
 				</div>
-				<div class="column is-3">
+				<!--<div class="column is-3">
 					Rechercher : <input type="text" id="search_term" name="search_term" value=" " />
 				</div>
 				<div class="column is-3">
@@ -20,7 +20,7 @@
 						<option value="id_feed">ID</option>
 						<option value="url">Site</option>
 					</select>
-				</div>
+				</div>-->
 			</form>
 			<br>
 			<div>
