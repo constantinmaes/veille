@@ -184,7 +184,7 @@
 							//$(this).parent.('.tags').html(result);
 						}
 						else{
-							alert('pb');
+							//alert('pb');
 						}
 					}
 				});

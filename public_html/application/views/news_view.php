@@ -11,7 +11,7 @@
 					</select>
 				</div>
 				<div class="column is-3">
-					Rechercher : <input type="text" id="search_term" name="search_term" placeholder="Mot, phrase..." />
+					Rechercher : <input type="text" id="search_term" name="search_term" value=" " />
 				</div>
 				<div class="column is-3">
 					Trier par  : 
