@@ -243,16 +243,6 @@ class News_model extends CI_model {
 	public function cleanDb(){ //Supprimer les doublons dans la base de données sur base de l'url (normalement pas nécessaire car check avant insertion).
 		$results = array();
 		$results=$this->getAllNews();
-		/*$feeds = $this->db->get('feeds');
-		foreach($feeds->result() as $row){
-			$results[] = array(
-				'id_feed' => $row->id_feed,
-				'title' => $row->title,
-				'website' => $row->website,
-				'url' => $row->url,
-				'retrieval_date' => $row->retrieval_date,
-			);
-		}*/
 		$feeds_to_delete = array();
 		foreach($results as $key1=>$result1){
 			foreach($results as $key2=>$result2){
@@ -409,21 +399,28 @@ class News_model extends CI_model {
 	{
 		$tags = array();
 		$this->db->select('*');
-		$this->db->from('tags');
-		$this->db->join('tags_feeds','tags.id_tag=tags_feeds.id_tag');
+		$this->db->from('tags_feeds');
+		$this->db->join('tags','tags.id_tag=tags_feeds.id_tag');
 		$this->db->join('feeds','tags_feeds.id_feed=feeds.id_feed');
 		$results = $this->db->get();
-		if($results->num_rows()==0){
-			foreach($results->result() as $row){
-				$tags[] = array(
-					'id_tag' => $row->tags.id_tag,
-					'tag' => $row->tags.tag,
-					'id_feed' => $row->feeds.id_feed,
-					'retrieval_date' => $row->feeds.retrieval_date,
-				);
+		foreach($results->result() as $row){
+			$tags[] = array(
+				'id_tag' => $row->id_tag,
+				'tag' => $row->tag,
+				'id_feed' => $row->id_feed,
+				'retrieval_date' => $row->retrieval_date,
+			);
+		}
+		$tags_results = array();
+		foreach($tags as $tag){
+			if(array_key_exists($tag['tag'],$tags_results)){
+				$tags_results[$tag['tag']] += 1;
+			}
+			else{
+				$tags_results[$tag['tag']] = 1;
 			}
 		}
-		return $results;
+		return $tags_results;
 	}
 }
 ?>
