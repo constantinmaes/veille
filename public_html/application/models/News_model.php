@@ -245,10 +245,14 @@ class News_model extends CI_model {
 				if($result1['url']==$result2['url'] && $result1['id_feed']!=$result2['id_feed'] && !in_array($result1['id_feed'],$feeds_to_delete) && !in_array($result2['id_feed'], $feeds_to_delete)){
 						$feeds_to_delete[]=$result2['id_feed'];
 						$this->db->where('id_feed', $result2['id_feed']);
+						$this->db->delete('tags_feeds');
+						$this->db->where('id_feed', $result2['id_feed']);
 						$this->db->delete('feeds');
 				}
 				if($result1['title']==$result2['title'] && $result1['id_feed']!=$result2['id_feed'] && !in_array($result1['id_feed'],$feeds_to_delete) && !in_array($result2['id_feed'], $feeds_to_delete)){
 						$feeds_to_delete[]=$result2['id_feed'];
+						$this->db->where('id_feed', $result2['id_feed']);
+						$this->db->delete('tags_feeds');
 						$this->db->where('id_feed', $result2['id_feed']);
 						$this->db->delete('feeds');
 				}
