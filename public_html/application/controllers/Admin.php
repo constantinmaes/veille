@@ -100,6 +100,16 @@ class Admin extends CI_Controller {
 		$this->load->model('news_model');
 		$data['classe'] = $this->router->class;
 		$data['results'] = $this->news_model->analyseTags();
+		$labels = '';
+		$values = '';
+		foreach($data['results'] as $label=>$value){
+			$labels .='"'.$label.'",';
+			$values .='"'.$value.'",';
+		}
+		$labels = substr($labels, 0, -1);
+		$values = substr($values, 0, -1);
+		$data['labels'] = $labels
+;		$data['values']	= $values;
 		$this->template->load('admin','tags_view',$data);
 	}
 }
